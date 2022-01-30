@@ -1,0 +1,32 @@
+<!-- 個別設定とユーザ編集の表示 -->
+<%
+   if controller &&
+      (controller.class.name == 'MyController' &&
+       controller.action_name == 'account') ||
+      (controller.class.name == 'UsersController' &&
+       controller.action_name == 'edit')
+%>
+
+<fieldset class="box" id="notified_events">
+  <legend><%=l(:text_select_mail_notifications)%></legend>
+
+  <% @notifiables.each do |notifiable| %>
+    <%= notification_field notifiable %>
+    <br />
+  <% end %>
+
+  <p><%= check_all_links('notified_events') %></p>
+</fieldset>
+
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function(e) {
+  let box = document.getElementById('notified-projects');
+  let events = document.getElementById('notified_events');
+
+  if (box && events) {
+    box.parentNode.appendChild(events);
+  }
+});
+</script>
+
+<% end %> <!-- if -->

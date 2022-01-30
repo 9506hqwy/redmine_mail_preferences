@@ -1,0 +1,5 @@
+user_mail_preferences_001:
+  user_id: 1
+  disable_notified_events: |
+    - issue_added
+    - issue_updated
