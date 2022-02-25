@@ -37,11 +37,14 @@ module RedmineMailPreferences
     end
 
     def user_disable_notified_events(enables)
-      Redmine::Notifiable.all.map { |n| n.name } - enables
+      enable_children =  Redmine::Notifiable.all.select { |c| enables.any? { |e| e == c.parent } }.map { |n| n.name }
+      Redmine::Notifiable.all.map { |n| n.name } - (enables | enable_children)
     end
 
     def user_enable_notified_events(disables)
-      Redmine::Notifiable.all.map { |n| n.name } - disables
+      enables = Redmine::Notifiable.all.map { |n| n.name } - disables
+      enable_children =  Redmine::Notifiable.all.select { |c| enables.any? { |e| e == c.parent } }.map { |n| n.name }
+      enables - enable_children
     end
   end
 end

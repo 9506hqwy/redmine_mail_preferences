@@ -39,10 +39,6 @@ class MyControllerTest < Redmine::ControllerTest
 
     u = User.find(1)
     prefs = u.mail_preferences
-    if Redmine::VERSION::MAJOR >= 4
-      assert_equal 12, prefs.disable_notified_events.length
-    else
-      assert_equal 11, prefs.disable_notified_events.length
-    end
+    assert_equal 7, prefs.disable_notified_events.length
   end
 end
