@@ -30,8 +30,29 @@ module RedmineMailPreferences
       end
 
       if ['deliver_issue_edit'].include?(method)
-        # TODO
-        return ['issue_updated']
+        events = ['issue_updated']
+
+        if container.notes.present?
+          events << 'issue_note_added'
+        end
+
+        if container.new_status.present?
+          events << 'issue_status_updated'
+        end
+
+        if container.detail_for_attribute('assigned_to_id').present?
+          events << 'issue_assigned_to_updated'
+        end
+
+        if container.detail_for_attribute('priority_id').present?
+          events << 'issue_priority_updated'
+        end
+
+        if container.detail_for_attribute('fixed_version_id').present?
+          events << 'issue_fixed_version_updated'
+        end
+
+        return events
       end
 
       if ['document_added', 'deliver_document_added'].include?(method)
