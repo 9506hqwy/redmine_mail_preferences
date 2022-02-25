@@ -71,12 +71,14 @@ class IssuesTest < Redmine::IntegrationTest
 
     if Redmine::VERSION::MAJOR >= 4
       assert_equal 2, ActionMailer::Base.deliveries.length
+      assert_equal 1, ActionMailer::Base.deliveries[0].to.length
+      assert_equal 1, ActionMailer::Base.deliveries[1].to.length
 
-      mail0 = ActionMailer::Base.deliveries[0]
-      mail1 = ActionMailer::Base.deliveries[1]
+      to0 = ActionMailer::Base.deliveries[0].to
+      to1 = ActionMailer::Base.deliveries[1].to
 
-      assert_equal ['jsmith@somenet.foo'], mail0.to
-      assert_equal ['dlopper@somenet.foo'], mail1.to
+      assert_include 'jsmith@somenet.foo', (to0 + to1)
+      assert_include 'dlopper@somenet.foo', (to0 + to1)
     else
       assert_equal 1, ActionMailer::Base.deliveries.length
 
@@ -125,12 +127,14 @@ class IssuesTest < Redmine::IntegrationTest
 
     if Redmine::VERSION::MAJOR >= 4
       assert_equal 2, ActionMailer::Base.deliveries.length
+      assert_equal 1, ActionMailer::Base.deliveries[0].to.length
+      assert_equal 1, ActionMailer::Base.deliveries[1].to.length
 
-      mail0 = ActionMailer::Base.deliveries[0]
-      mail1 = ActionMailer::Base.deliveries[1]
+      to0 = ActionMailer::Base.deliveries[0].to
+      to1 = ActionMailer::Base.deliveries[1].to
 
-      assert_equal ['jsmith@somenet.foo'], mail0.to
-      assert_equal ['dlopper@somenet.foo'], mail1.to
+      assert_include 'jsmith@somenet.foo', (to0 + to1)
+      assert_include 'dlopper@somenet.foo', (to0 + to1)
     else
       # FIXME: 0 at test only in Redmine3
       assert_equal 1, ActionMailer::Base.deliveries.length
