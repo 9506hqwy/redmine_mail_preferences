@@ -48,7 +48,8 @@ module RedmineMailPreferences
           events << 'issue_priority_updated'
         end
 
-        if container.detail_for_attribute('fixed_version_id').present?
+        if ([4, 1] <=> [Redmine::VERSION::MAJOR, Redmine::VERSION::MINOR]) <= 0 &&
+            container.detail_for_attribute('fixed_version_id').present?
           events << 'issue_fixed_version_updated'
         end
 
