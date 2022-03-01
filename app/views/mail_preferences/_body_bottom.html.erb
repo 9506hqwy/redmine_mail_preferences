@@ -10,6 +10,8 @@
 <fieldset class="box" id="notified_events">
   <legend><%=l(:text_select_mail_notifications)%></legend>
 
+  <%= hidden_field_tag('settings[notified_events][]', '') %>
+
   <% @notifiables.each do |notifiable| %>
     <%= notification_field notifiable %>
     <br />

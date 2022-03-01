@@ -8,7 +8,9 @@ module RedmineMailPreferences
     end
 
     def update_user_mail_preferences
-      settings = params.fetch(:settings, {})
+      settings = params[:settings]
+      return if settings.nil?
+
       notified_events = settings.fetch(:notified_events, [])
 
       prefs = @user.mail_preferences || UserMailPreference.new
