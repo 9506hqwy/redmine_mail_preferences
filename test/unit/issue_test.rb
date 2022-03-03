@@ -3,7 +3,8 @@
 require File.expand_path('../../test_helper', __FILE__)
 
 class IssueTest < ActiveSupport::TestCase
-  fixtures :issues,
+  fixtures :enabled_modules,
+           :issues,
            :member_roles,
            :members,
            :projects,

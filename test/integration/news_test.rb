@@ -14,7 +14,9 @@ class NewssTest < Redmine::IntegrationTest
            :news,
            :projects,
            :roles,
+           :user_preferences,
            :users,
+           :watchers,
            :user_mail_preferences
 
   def setup

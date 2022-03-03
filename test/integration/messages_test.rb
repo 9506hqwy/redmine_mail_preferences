@@ -14,7 +14,9 @@ class MessagesTest < Redmine::IntegrationTest
            :messages,
            :projects,
            :roles,
+           :user_preferences,
            :users,
+           :watchers,
            :user_mail_preferences
 
   def setup
@@ -42,11 +44,26 @@ class MessagesTest < Redmine::IntegrationTest
         })
     end
 
-    assert_equal 1, ActionMailer::Base.deliveries.length
+    if Redmine::VERSION::MAJOR >= 4
+      assert_equal 2, ActionMailer::Base.deliveries.length
+      assert_equal 1, ActionMailer::Base.deliveries[0].to.length
+      assert_equal 1, ActionMailer::Base.deliveries[1].to.length
 
-    mail0 = ActionMailer::Base.deliveries[0]
+      to0 = ActionMailer::Base.deliveries[0].to
+      to1 = ActionMailer::Base.deliveries[1].to
 
-    assert_equal ['dlopper@somenet.foo'], mail0.to
+      assert_include 'admin@somenet.foo', (to0 + to1)
+      assert_include 'dlopper@somenet.foo', (to0 + to1)
+    else
+      assert_equal 1, ActionMailer::Base.deliveries.length
+
+      mail = ActionMailer::Base.deliveries[0]
+      assert_equal 1, mail.to.length
+      assert_equal 1, mail.cc.length
+
+      assert_include 'dlopper@somenet.foo', mail.to
+      assert_include 'admin@somenet.foo', mail.cc
+    end
   end
 
   def test_message_posted_enabled
@@ -64,23 +81,28 @@ class MessagesTest < Redmine::IntegrationTest
     end
 
     if Redmine::VERSION::MAJOR >= 4
-      assert_equal 2, ActionMailer::Base.deliveries.length
+      assert_equal 3, ActionMailer::Base.deliveries.length
       assert_equal 1, ActionMailer::Base.deliveries[0].to.length
       assert_equal 1, ActionMailer::Base.deliveries[1].to.length
+      assert_equal 1, ActionMailer::Base.deliveries[2].to.length
 
       to0 = ActionMailer::Base.deliveries[0].to
       to1 = ActionMailer::Base.deliveries[1].to
+      to2 = ActionMailer::Base.deliveries[2].to
 
-      assert_include 'jsmith@somenet.foo', (to0 + to1)
-      assert_include 'dlopper@somenet.foo', (to0 + to1)
+      assert_include 'admin@somenet.foo', (to0 + to1 + to2)
+      assert_include 'jsmith@somenet.foo', (to0 + to1 + to2)
+      assert_include 'dlopper@somenet.foo', (to0 + to1 + to2)
     else
       assert_equal 1, ActionMailer::Base.deliveries.length
 
       mail = ActionMailer::Base.deliveries[0]
       assert_equal 2, mail.to.length
+      assert_equal 1, mail.cc.length
 
       assert_include 'jsmith@somenet.foo', mail.to
       assert_include 'dlopper@somenet.foo', mail.to
+      assert_include 'admin@somenet.foo', mail.cc
     end
   end
 end

@@ -3,7 +3,8 @@
 require File.expand_path('../../test_helper', __FILE__)
 
 class NewsTest < ActiveSupport::TestCase
-  fixtures :member_roles,
+  fixtures :enabled_modules,
+           :member_roles,
            :members,
            :news,
            :projects,

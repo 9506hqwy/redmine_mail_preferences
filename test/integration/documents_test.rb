@@ -13,7 +13,9 @@ class DocumentsTest < Redmine::IntegrationTest
            :members,
            :projects,
            :roles,
+           :user_preferences,
            :users,
+           :watchers,
            :user_mail_preferences
 
   def setup

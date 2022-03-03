@@ -4,6 +4,7 @@ require File.expand_path('../../test_helper', __FILE__)
 
 class MessageTest < ActiveSupport::TestCase
   fixtures :boards,
+           :enabled_modules,
            :member_roles,
            :messages,
            :members,

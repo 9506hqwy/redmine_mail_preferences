@@ -3,12 +3,15 @@
 require File.expand_path('../../test_helper', __FILE__)
 
 class WikiContentTest < ActiveSupport::TestCase
-  fixtures :member_roles,
+  fixtures :enabled_modules,
+           :member_roles,
            :members,
            :projects,
            :roles,
            :users,
            :wiki_contents,
+           :wiki_pages,
+           :wikis,
            :user_mail_preferences
 
   def setup
