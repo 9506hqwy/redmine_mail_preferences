@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'test_after_commit' if ActiveRecord::VERSION::MAJOR < 5
 require File.expand_path('../../test_helper', __FILE__)
 
 class IssuesTest < Redmine::IntegrationTest
@@ -101,13 +102,15 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put(
-      '/issues/2',
-      params: {
-        issue: {
-          subject: "test issue",
-        }
-      })
+    put_issue_edit do
+      put(
+        '/issues/2',
+        params: {
+          issue: {
+            subject: "test issue",
+          }
+        })
+    end
 
     if Redmine::VERSION::MAJOR >= 4
       assert_equal 2, ActionMailer::Base.deliveries.length
@@ -120,7 +123,6 @@ class IssuesTest < Redmine::IntegrationTest
       assert_include 'admin@somenet.foo', (to0 + to1)
       assert_include 'dlopper@somenet.foo', (to0 + to1)
     else
-      # FIXME: 0 at test only in Redmine3
       assert_equal 1, ActionMailer::Base.deliveries.length
 
       mail = ActionMailer::Base.deliveries[0]
@@ -128,7 +130,7 @@ class IssuesTest < Redmine::IntegrationTest
       assert_equal 1, mail.cc.length
 
       assert_include 'dlopper@somenet.foo', mail.to
-      assert_include 'admin@somenet.foo', mai.cc
+      assert_include 'admin@somenet.foo', mail.cc
     end
   end
 
@@ -140,13 +142,15 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put(
-      '/issues/2',
-      params: {
-        issue: {
-          notes: "note",
-        }
-      })
+    put_issue_edit do
+      put(
+        '/issues/2',
+        params: {
+          issue: {
+            notes: "note",
+          }
+        })
+    end
 
     if Redmine::VERSION::MAJOR >= 4
       assert_equal 2, ActionMailer::Base.deliveries.length
@@ -159,7 +163,6 @@ class IssuesTest < Redmine::IntegrationTest
       assert_include 'admin@somenet.foo', (to0 + to1)
       assert_include 'dlopper@somenet.foo', (to0 + to1)
     else
-      # FIXME: 0 at test only in Redmine3
       assert_equal 1, ActionMailer::Base.deliveries.length
 
       mail = ActionMailer::Base.deliveries[0]
@@ -167,7 +170,7 @@ class IssuesTest < Redmine::IntegrationTest
       assert_equal 1, mail.cc.length
 
       assert_include 'dlopper@somenet.foo', mail.to
-      assert_include 'admin@somenet.foo', mai.cc
+      assert_include 'admin@somenet.foo', mail.cc
     end
   end
 
@@ -179,13 +182,15 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put(
-      '/issues/2',
-      params: {
-        issue: {
-          status_id: '3',
-        }
-      })
+    put_issue_edit do
+      put(
+        '/issues/2',
+        params: {
+          issue: {
+            status_id: '3',
+          }
+        })
+    end
 
     if Redmine::VERSION::MAJOR >= 4
       assert_equal 2, ActionMailer::Base.deliveries.length
@@ -198,7 +203,6 @@ class IssuesTest < Redmine::IntegrationTest
       assert_include 'admin@somenet.foo', (to0 + to1)
       assert_include 'dlopper@somenet.foo', (to0 + to1)
     else
-      # FIXME: 0 at test only in Redmine3
       assert_equal 1, ActionMailer::Base.deliveries.length
 
       mail = ActionMailer::Base.deliveries[0]
@@ -206,7 +210,7 @@ class IssuesTest < Redmine::IntegrationTest
       assert_equal 1, mail.cc.length
 
       assert_include 'dlopper@somenet.foo', mail.to
-      assert_include 'admin@somenet.foo', mai.cc
+      assert_include 'admin@somenet.foo', mail.cc
     end
   end
 
@@ -218,13 +222,15 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put(
-      '/issues/2',
-      params: {
-        issue: {
-          assigned_to_id: '2',
-        }
-      })
+    put_issue_edit do
+      put(
+        '/issues/2',
+        params: {
+          issue: {
+            assigned_to_id: '2',
+          }
+        })
+    end
 
     if Redmine::VERSION::MAJOR >= 4
       assert_equal 2, ActionMailer::Base.deliveries.length
@@ -237,7 +243,6 @@ class IssuesTest < Redmine::IntegrationTest
       assert_include 'admin@somenet.foo', (to0 + to1)
       assert_include 'dlopper@somenet.foo', (to0 + to1)
     else
-      # FIXME: 0 at test only in Redmine3
       assert_equal 1, ActionMailer::Base.deliveries.length
 
       mail = ActionMailer::Base.deliveries[0]
@@ -245,7 +250,7 @@ class IssuesTest < Redmine::IntegrationTest
       assert_equal 1, mail.cc.length
 
       assert_include 'dlopper@somenet.foo', mail.to
-      assert_include 'admin@somenet.foo', mai.cc
+      assert_include 'admin@somenet.foo', mail.cc
     end
   end
 
@@ -257,13 +262,15 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put(
-      '/issues/2',
-      params: {
-        issue: {
-          priority_id: '8',
-        }
-      })
+    put_issue_edit do
+      put(
+        '/issues/2',
+        params: {
+          issue: {
+            priority_id: '8',
+          }
+        })
+    end
 
     if Redmine::VERSION::MAJOR >= 4
       assert_equal 2, ActionMailer::Base.deliveries.length
@@ -276,7 +283,6 @@ class IssuesTest < Redmine::IntegrationTest
       assert_include 'admin@somenet.foo', (to0 + to1)
       assert_include 'dlopper@somenet.foo', (to0 + to1)
     else
-      # FIXME: 0 at test only in Redmine3
       assert_equal 1, ActionMailer::Base.deliveries.length
 
       mail = ActionMailer::Base.deliveries[0]
@@ -284,7 +290,7 @@ class IssuesTest < Redmine::IntegrationTest
       assert_equal 1, mail.cc.length
 
       assert_include 'dlopper@somenet.foo', mail.to
-      assert_include 'admin@somenet.foo', mai.cc
+      assert_include 'admin@somenet.foo', mail.cc
     end
   end
 
@@ -293,18 +299,22 @@ class IssuesTest < Redmine::IntegrationTest
     m.user = users(:users_002)
     if Redmine::VERSION::MAJOR >= 4
       m.disable_notified_events = ['issue_updated', 'issue_fixed_version_updated']
+    else
+      m.disable_notified_events = ['issue_updated']
     end
     m.save!
 
     log_user('admin', 'admin')
 
-    put(
-      '/issues/2',
-      params: {
-        issue: {
-          fixed_version_id: '3',
-        }
-      })
+    put_issue_edit do
+      put(
+        '/issues/2',
+        params: {
+          issue: {
+            fixed_version_id: '3',
+          }
+        })
+    end
 
     if Redmine::VERSION::MAJOR >= 4
       assert_equal 2, ActionMailer::Base.deliveries.length
@@ -317,7 +327,6 @@ class IssuesTest < Redmine::IntegrationTest
       assert_include 'admin@somenet.foo', (to0 + to1)
       assert_include 'dlopper@somenet.foo', (to0 + to1)
     else
-      # FIXME: 0 at test only in Redmine3
       assert_equal 1, ActionMailer::Base.deliveries.length
 
       mail = ActionMailer::Base.deliveries[0]
@@ -325,20 +334,22 @@ class IssuesTest < Redmine::IntegrationTest
       assert_equal 1, mail.cc.length
 
       assert_include 'dlopper@somenet.foo', mail.to
-      assert_include 'admin@somenet.foo', mai.cc
+      assert_include 'admin@somenet.foo', mail.cc
     end
   end
 
   def test_issue_edit_enabled_issue_updated
     log_user('admin', 'admin')
 
-    put(
-      '/issues/2',
-      params: {
-        issue: {
-          subject: "test issue",
-        }
-      })
+    put_issue_edit do
+      put(
+        '/issues/2',
+        params: {
+          issue: {
+            subject: "test issue",
+          }
+        })
+    end
 
     if Redmine::VERSION::MAJOR >= 4
       assert_equal 3, ActionMailer::Base.deliveries.length
@@ -354,7 +365,6 @@ class IssuesTest < Redmine::IntegrationTest
       assert_include 'jsmith@somenet.foo', (to0 + to1 +  to2)
       assert_include 'dlopper@somenet.foo', (to0 + to1 + to2)
     else
-      # FIXME: 0 at test only in Redmine3
       assert_equal 1, ActionMailer::Base.deliveries.length
 
       mail = ActionMailer::Base.deliveries[0]
@@ -375,13 +385,15 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put(
-      '/issues/2',
-      params: {
-        issue: {
-          notes: "note",
-        }
-      })
+    put_issue_edit do
+      put(
+        '/issues/2',
+        params: {
+          issue: {
+            notes: "note",
+          }
+        })
+    end
 
     if Redmine::VERSION::MAJOR >= 4
       assert_equal 3, ActionMailer::Base.deliveries.length
@@ -397,7 +409,6 @@ class IssuesTest < Redmine::IntegrationTest
       assert_include 'jsmith@somenet.foo', (to0 + to1 +  to2)
       assert_include 'dlopper@somenet.foo', (to0 + to1 + to2)
     else
-      # FIXME: 0 at test only in Redmine3
       assert_equal 1, ActionMailer::Base.deliveries.length
 
       mail = ActionMailer::Base.deliveries[0]
@@ -418,13 +429,15 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put(
-      '/issues/2',
-      params: {
-        issue: {
-          status_id: '3',
-        }
-      })
+    put_issue_edit do
+      put(
+        '/issues/2',
+        params: {
+          issue: {
+            status_id: '3',
+          }
+        })
+    end
 
     if Redmine::VERSION::MAJOR >= 4
       assert_equal 3, ActionMailer::Base.deliveries.length
@@ -440,7 +453,6 @@ class IssuesTest < Redmine::IntegrationTest
       assert_include 'jsmith@somenet.foo', (to0 + to1 +  to2)
       assert_include 'dlopper@somenet.foo', (to0 + to1 + to2)
     else
-      # FIXME: 0 at test only in Redmine3
       assert_equal 1, ActionMailer::Base.deliveries.length
 
       mail = ActionMailer::Base.deliveries[0]
@@ -461,13 +473,15 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put(
-      '/issues/2',
-      params: {
-        issue: {
-          assigned_to_id: '2',
-        }
-      })
+    put_issue_edit do
+      put(
+        '/issues/2',
+        params: {
+          issue: {
+            assigned_to_id: '2',
+          }
+        })
+    end
 
     if Redmine::VERSION::MAJOR >= 4
       assert_equal 3, ActionMailer::Base.deliveries.length
@@ -483,7 +497,6 @@ class IssuesTest < Redmine::IntegrationTest
       assert_include 'jsmith@somenet.foo', (to0 + to1 +  to2)
       assert_include 'dlopper@somenet.foo', (to0 + to1 + to2)
     else
-      # FIXME: 0 at test only in Redmine3
       assert_equal 1, ActionMailer::Base.deliveries.length
 
       mail = ActionMailer::Base.deliveries[0]
@@ -504,13 +517,15 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put(
-      '/issues/2',
-      params: {
-        issue: {
-          priority_id: '8',
-        }
-      })
+    put_issue_edit do
+      put(
+        '/issues/2',
+        params: {
+          issue: {
+            priority_id: '8',
+          }
+        })
+    end
 
     if Redmine::VERSION::MAJOR >= 4
       assert_equal 3, ActionMailer::Base.deliveries.length
@@ -526,7 +541,6 @@ class IssuesTest < Redmine::IntegrationTest
       assert_include 'jsmith@somenet.foo', (to0 + to1 +  to2)
       assert_include 'dlopper@somenet.foo', (to0 + to1 + to2)
     else
-      # FIXME: 0 at test only in Redmine3
       assert_equal 1, ActionMailer::Base.deliveries.length
 
       mail = ActionMailer::Base.deliveries[0]
@@ -542,18 +556,24 @@ class IssuesTest < Redmine::IntegrationTest
   def test_issue_edit_enabled_issue_fixed_version_updated
     m = UserMailPreference.new
     m.user = users(:users_002)
-    m.disable_notified_events = ['issue_updated']
+    if Redmine::VERSION::MAJOR >= 4
+      m.disable_notified_events = ['issue_updated']
+    else
+      m.disable_notified_events = []
+    end
     m.save!
 
     log_user('admin', 'admin')
 
-    put(
-      '/issues/2',
-      params: {
-        issue: {
-          fixed_version_id: '3',
-        }
-      })
+    put_issue_edit do
+      put(
+        '/issues/2',
+        params: {
+          issue: {
+            fixed_version_id: '3',
+          }
+        })
+    end
 
     if Redmine::VERSION::MAJOR >= 4
       assert_equal 3, ActionMailer::Base.deliveries.length
@@ -569,7 +589,6 @@ class IssuesTest < Redmine::IntegrationTest
       assert_include 'jsmith@somenet.foo', (to0 + to1 +  to2)
       assert_include 'dlopper@somenet.foo', (to0 + to1 + to2)
     else
-      # FIXME: 0 at test only in Redmine3
       assert_equal 1, ActionMailer::Base.deliveries.length
 
       mail = ActionMailer::Base.deliveries[0]
@@ -579,6 +598,14 @@ class IssuesTest < Redmine::IntegrationTest
       assert_include 'jsmith@somenet.foo', mail.to
       assert_include 'dlopper@somenet.foo', mail.to
       assert_include 'admin@somenet.foo', mail.cc
+    end
+  end
+
+  def put_issue_edit(&block)
+    if ActiveRecord::VERSION::MAJOR >= 5
+      yield
+    else
+      TestAfterCommit.with_commits(true, &block)
     end
   end
 end
