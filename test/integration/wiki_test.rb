@@ -23,7 +23,7 @@ class WikiTest < Redmine::IntegrationTest
 
   def setup
     Setting.bcc_recipients = false
-    Setting.notified_events = ['wiki_content_added', 'wiki_content_updated']
+    Setting.notified_events = ['wiki_content_added', 'wiki_content_updated', 'wiki_comment_added']
     ActionMailer::Base.deliveries.clear
   end
 
@@ -139,5 +139,73 @@ class WikiTest < Redmine::IntegrationTest
       assert_include 'jsmith@somenet.foo', mail.to
       assert_include 'dlopper@somenet.foo', mail.to
     end
+  end
+
+  def test_wiki_comment_added_disabled
+    skip unless Redmine::Plugin.installed?(:redmine_wiki_extensions)
+    skip unless Redmine::VERSION::MAJOR >= 4
+
+    m = UserMailPreference.new
+    m.user = users(:users_002)
+    m.disable_notified_events = ['wiki_comment_added']
+    m.save!
+
+    projects(:projects_001).enable_module!(:wiki_extensions)
+    roles(:roles_001).add_permission!(:add_wiki_comment)
+
+    page = wiki_pages(:wiki_pages_001)
+    page.add_watcher(users(:users_001))
+
+    log_user('jsmith', 'jsmith')
+
+    post(
+      '/projects/ecookbook/wiki_extensions/add_comment',
+      params: {
+        wiki_page_id: page.id,
+        comment: 'test comment',
+      })
+
+    assert_equal 2, ActionMailer::Base.deliveries.length
+    assert_equal 1, ActionMailer::Base.deliveries[0].to.length
+    assert_equal 1, ActionMailer::Base.deliveries[1].to.length
+
+    t0 = ActionMailer::Base.deliveries[0].to
+    t1 = ActionMailer::Base.deliveries[1].to
+
+    assert_include 'admin@somenet.foo', (t0 + t1)
+    assert_include 'dlopper@somenet.foo', (t0 + t1)
+  end
+
+  def test_wiki_comment_added_enabled
+    skip unless Redmine::Plugin.installed?(:redmine_wiki_extensions)
+    skip unless Redmine::VERSION::MAJOR >= 4
+
+    projects(:projects_001).enable_module!(:wiki_extensions)
+    roles(:roles_001).add_permission!(:add_wiki_comment)
+
+    page = wiki_pages(:wiki_pages_001)
+    page.add_watcher(users(:users_001))
+
+    log_user('jsmith', 'jsmith')
+
+    post(
+      '/projects/ecookbook/wiki_extensions/add_comment',
+      params: {
+        wiki_page_id: page.id,
+        comment: 'test comment',
+      })
+
+    assert_equal 3, ActionMailer::Base.deliveries.length
+    assert_equal 1, ActionMailer::Base.deliveries[0].to.length
+    assert_equal 1, ActionMailer::Base.deliveries[1].to.length
+    assert_equal 1, ActionMailer::Base.deliveries[2].to.length
+
+    t0 = ActionMailer::Base.deliveries[0].to
+    t1 = ActionMailer::Base.deliveries[1].to
+    t2 = ActionMailer::Base.deliveries[2].to
+
+    assert_include 'admin@somenet.foo', (t0 + t1 + t2)
+    assert_include 'jsmith@somenet.foo', (t0 + t1 + t2)
+    assert_include 'dlopper@somenet.foo', (t0 + t1 + t2)
   end
 end

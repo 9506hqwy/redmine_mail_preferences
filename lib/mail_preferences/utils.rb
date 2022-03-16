@@ -88,6 +88,11 @@ module RedmineMailPreferences
         return ['wiki_content_updated']
       end
 
+      # for redmine_wiki_extensions 0.9.3 or later.
+      if ['deliver_wiki_commented'].include?(method)
+        return ['wiki_comment_added']
+      end
+
       nil
     end
   end

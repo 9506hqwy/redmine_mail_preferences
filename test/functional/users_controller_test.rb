@@ -37,8 +37,11 @@ class UsersControllerTest < Redmine::ControllerTest
 
     assert_response :redirect
 
+    expect = 7
+    expect += 1 if Redmine::Plugin.installed?(:redmine_wiki_extensions)
+
     u = User.find(1)
     prefs = u.mail_preferences
-    assert_equal 7, prefs.disable_notified_events.length
+    assert_equal expect, prefs.disable_notified_events.length
   end
 end
