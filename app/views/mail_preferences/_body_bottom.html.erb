@@ -8,7 +8,7 @@
 %>
 
 <fieldset class="box" id="notified_events">
-  <legend><%=l(:text_select_mail_notifications)%></legend>
+  <legend><%=l(:text_select_mail_notifications)%><%= l(:label_except_watcher) %></legend>
 
   <%= hidden_field_tag('settings[notified_events][]', '') %>
 
