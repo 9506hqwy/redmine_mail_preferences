@@ -17,6 +17,7 @@ class MessagesTest < Redmine::IntegrationTest
            :user_preferences,
            :users,
            :watchers,
+           :project_mail_preferences,
            :user_mail_preferences
 
   def setup
@@ -102,6 +103,41 @@ class MessagesTest < Redmine::IntegrationTest
 
       assert_include 'jsmith@somenet.foo', mail.to
       assert_include 'dlopper@somenet.foo', mail.to
+      assert_include 'admin@somenet.foo', mail.cc
+    end
+  end
+
+  def test_message_posted_project_disabled
+    p = projects(:projects_001)
+    p.enable_module!(:mail_preferences)
+
+    m = ProjectMailPreference.new
+    m.project = p
+    m.disable_notified_events = ['message_posted']
+    m.save!
+
+    log_user('admin', 'admin')
+
+    new_record(Message) do
+      post(
+        '/boards/1/topics/new',
+        params: {
+          message: {
+            subject: 'test',
+            content: 'test',
+          }
+        })
+    end
+
+    assert_equal 1, ActionMailer::Base.deliveries.length
+    if Redmine::VERSION::MAJOR >= 4
+      assert_equal 1, ActionMailer::Base.deliveries.last.to.length
+      assert_include 'admin@somenet.foo', ActionMailer::Base.deliveries.last.to
+    else
+      mail = ActionMailer::Base.deliveries[0]
+      assert_equal 0, mail.to.length
+      assert_equal 1, mail.cc.length
+
       assert_include 'admin@somenet.foo', mail.cc
     end
   end

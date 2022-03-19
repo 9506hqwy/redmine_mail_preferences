@@ -9,6 +9,7 @@ class ProjectTest < ActiveSupport::TestCase
            :projects,
            :roles,
            :users,
+           :project_mail_preferences,
            :user_mail_preferences
 
   def setup
@@ -16,6 +17,18 @@ class ProjectTest < ActiveSupport::TestCase
     m.user = users(:users_002)
     m.disable_notified_events = ['file_added']
     m.save!
+  end
+
+  def test_destroy
+    p = projects(:projects_005)
+    p.destroy!
+
+    begin
+      project_mail_preferences(:project_mail_preferences_001)
+      assert false
+    rescue ActiveRecord::RecordNotFound
+      assert true
+    end
   end
 
   def test_notified_users_disable

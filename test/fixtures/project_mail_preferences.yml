@@ -1,0 +1,5 @@
+project_mail_preferences_001:
+  project_id: 5
+  disable_notified_events: |
+    - issue_added
+    - issue_updated

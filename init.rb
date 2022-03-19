@@ -10,6 +10,7 @@ require_dependency 'mail_preferences/message_patch'
 require_dependency 'mail_preferences/my_controller_patch'
 require_dependency 'mail_preferences/news_patch'
 require_dependency 'mail_preferences/project_patch'
+require_dependency 'mail_preferences/projects_helper_patch'
 require_dependency 'mail_preferences/users_controller_patch'
 require_dependency 'mail_preferences/user_patch'
 require_dependency 'mail_preferences/utils'
@@ -23,4 +24,8 @@ Redmine::Plugin.register :redmine_mail_preferences do
   version '0.2.0'
   url 'https://github.com/9506hqwy/redmine_mail_preferences'
   author_url 'https://github.com/9506hqwy'
+
+  project_module :mail_preferences do
+    permission :edit_mail_preferences, { project_mail_preferences: [:update] }
+  end
 end

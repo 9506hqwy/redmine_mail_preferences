@@ -1,0 +1,33 @@
+<!-- プロジェクト設定のタブ表示 -->
+<%
+   project_mail_preferences
+%>
+
+<%
+   if @notifiables.length != 0
+%>
+
+<%= form_tag({controller: :project_mail_preferences, action: :update, project_id: @project.id},
+             id: 'mail_preferences',
+             method: 'PUT') do %>
+
+<fieldset class="box" id="notified_events">
+  <legend><%=l(:text_select_mail_notifications)%><%= l(:label_except_watcher) %></legend>
+
+  <%= hidden_field_tag('settings[notified_events][]', '') %>
+
+  <% @notifiables.each do |notifiable| %>
+    <%= notification_field notifiable %>
+    <br />
+  <% end %>
+
+  <p><%= check_all_links('notified_events') %></p>
+</fieldset>
+
+<p>
+  <%= submit_tag(l(:button_save)) %>
+</p>
+
+<% end %> <!-- form_tag -->
+
+<% end %> <!-- if -->

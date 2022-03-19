@@ -8,10 +8,10 @@ module RedmineMailPreferences
       Migration = ActiveRecord::Migration
     end
 
-    def self.disable_event_for(user, events)
-      return false if user.mail_preferences.blank?
+    def self.disable_event_for(target, events)
+      return false if target.mail_preferences.blank?
 
-      disables = user.mail_preferences.disable_notified_events || []
+      disables = target.mail_preferences.disable_notified_events || []
       (events - disables).blank?
     end
 
@@ -19,6 +19,11 @@ module RedmineMailPreferences
       caller_method = caller_locations(2, 1)[0].base_label
       notified_events = method_to_event(container, caller_method)
       return users unless notified_events
+
+      project = container.is_a?(Project) ? container : container.project
+      if project.module_enabled?(:mail_preferences) && disable_event_for(project, notified_events)
+        return []
+      end
 
       users.reject! { |u| disable_event_for(u, notified_events) }
       users

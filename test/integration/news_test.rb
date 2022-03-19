@@ -17,6 +17,7 @@ class NewssTest < Redmine::IntegrationTest
            :user_preferences,
            :users,
            :watchers,
+           :project_mail_preferences,
            :user_mail_preferences
 
   def setup
@@ -141,5 +142,31 @@ class NewssTest < Redmine::IntegrationTest
       assert_include 'jsmith@somenet.foo', mail.to
       assert_include 'dlopper@somenet.foo', mail.to
     end
+  end
+
+  def test_news_add_project_disabled
+    p = projects(:projects_001)
+    p.enable_module!(:mail_preferences)
+
+    m = ProjectMailPreference.new
+    m.project = p
+    m.disable_notified_events = ['news_added']
+    m.save!
+
+    log_user('admin', 'admin')
+
+    new_record(News) do
+      post(
+        '/projects/ecookbook/news',
+        params: {
+          news: {
+            title: 'test',
+            description: 'test',
+            summary: "test",
+          }
+        })
+    end
+
+    assert_equal 0, ActionMailer::Base.deliveries.length
   end
 end

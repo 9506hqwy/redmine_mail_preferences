@@ -21,6 +21,7 @@ class IssuesTest < Redmine::IntegrationTest
            :trackers,
            :versions,
            :watchers,
+           :project_mail_preferences,
            :user_mail_preferences
 
   def setup
@@ -92,6 +93,33 @@ class IssuesTest < Redmine::IntegrationTest
       assert_include 'jsmith@somenet.foo', mail.to
       assert_include 'dlopper@somenet.foo', mail.to
     end
+  end
+
+  def test_issue_add_project_disabled
+    p = projects(:projects_001)
+    p.enable_module!(:mail_preferences)
+
+    m = ProjectMailPreference.new
+    m.project = p
+    m.disable_notified_events = ['issue_added']
+    m.save!
+
+    log_user('admin', 'admin')
+
+    new_record(Issue) do
+      post(
+        '/projects/ecookbook/issues',
+        params: {
+          issue: {
+            tracker_id: '1',
+            start_date: '2000-01-01',
+            priority_id: "5",
+            subject: "test issue",
+          }
+        })
+    end
+
+    assert_equal 0, ActionMailer::Base.deliveries.length
   end
 
   def test_issue_edit_disabled_issue_updated
@@ -598,6 +626,268 @@ class IssuesTest < Redmine::IntegrationTest
       assert_include 'jsmith@somenet.foo', mail.to
       assert_include 'dlopper@somenet.foo', mail.to
       assert_include 'admin@somenet.foo', mail.cc
+    end
+  end
+
+  def test_issue_edit_project_disabled_issue_updated
+    p = projects(:projects_001)
+    p.enable_module!(:mail_preferences)
+
+    m = ProjectMailPreference.new
+    m.project = p
+    m.disable_notified_events = ['issue_updated']
+    m.save!
+
+    log_user('admin', 'admin')
+
+    put_issue_edit do
+      put(
+        '/issues/2',
+        params: {
+          issue: {
+            subject: "test issue",
+          }
+        })
+    end
+
+    if Redmine::VERSION::MAJOR >= 4
+      assert_equal 2, ActionMailer::Base.deliveries.length
+      assert_equal 1, ActionMailer::Base.deliveries[0].to.length
+      assert_equal 1, ActionMailer::Base.deliveries[1].to.length
+
+      to0 = ActionMailer::Base.deliveries[0].to
+      to1 = ActionMailer::Base.deliveries[1].to
+
+      assert_include 'admin@somenet.foo', (to0 + to1)
+      assert_include 'dlopper@somenet.foo', (to0 + to1)
+    else
+      assert_equal 1, ActionMailer::Base.deliveries.length
+
+      mail = ActionMailer::Base.deliveries[0]
+      assert_equal 0, mail.to.length
+      assert_equal 2, mail.cc.length
+
+      assert_include 'admin@somenet.foo', mail.cc
+      assert_include 'dlopper@somenet.foo', mail.cc
+    end
+  end
+
+  def test_issue_edit_project_disabled_issue_note_added
+    p = projects(:projects_001)
+    p.enable_module!(:mail_preferences)
+
+    m = ProjectMailPreference.new
+    m.project = p
+    m.disable_notified_events = ['issue_updated', 'issue_note_added']
+    m.save!
+
+    log_user('admin', 'admin')
+
+    put_issue_edit do
+      put(
+        '/issues/2',
+        params: {
+          issue: {
+            notes: "note",
+          }
+        })
+    end
+
+    if Redmine::VERSION::MAJOR >= 4
+      assert_equal 2, ActionMailer::Base.deliveries.length
+      assert_equal 1, ActionMailer::Base.deliveries[0].to.length
+      assert_equal 1, ActionMailer::Base.deliveries[1].to.length
+
+      to0 = ActionMailer::Base.deliveries[0].to
+      to1 = ActionMailer::Base.deliveries[1].to
+
+      assert_include 'admin@somenet.foo', (to0 + to1)
+      assert_include 'dlopper@somenet.foo', (to0 + to1)
+    else
+      assert_equal 1, ActionMailer::Base.deliveries.length
+
+      mail = ActionMailer::Base.deliveries[0]
+      assert_equal 0, mail.to.length
+      assert_equal 2, mail.cc.length
+
+      assert_include 'admin@somenet.foo', mail.cc
+      assert_include 'dlopper@somenet.foo', mail.cc
+    end
+  end
+
+  def test_issue_edit_project_disabled_issue_status_updated
+    p = projects(:projects_001)
+    p.enable_module!(:mail_preferences)
+
+    m = ProjectMailPreference.new
+    m.project = p
+    m.disable_notified_events = ['issue_updated', 'issue_status_updated']
+    m.save!
+
+    log_user('admin', 'admin')
+
+    put_issue_edit do
+      put(
+        '/issues/2',
+        params: {
+          issue: {
+            status_id: '3',
+          }
+        })
+    end
+
+    if Redmine::VERSION::MAJOR >= 4
+      assert_equal 2, ActionMailer::Base.deliveries.length
+      assert_equal 1, ActionMailer::Base.deliveries[0].to.length
+      assert_equal 1, ActionMailer::Base.deliveries[1].to.length
+
+      to0 = ActionMailer::Base.deliveries[0].to
+      to1 = ActionMailer::Base.deliveries[1].to
+
+      assert_include 'admin@somenet.foo', (to0 + to1)
+      assert_include 'dlopper@somenet.foo', (to0 + to1)
+    else
+      assert_equal 1, ActionMailer::Base.deliveries.length
+
+      mail = ActionMailer::Base.deliveries[0]
+      assert_equal 0, mail.to.length
+      assert_equal 2, mail.cc.length
+
+      assert_include 'admin@somenet.foo', mail.cc
+      assert_include 'dlopper@somenet.foo', mail.cc
+    end
+  end
+
+  def test_issue_edit_project_disabled_issue_assigned_to_updated
+    p = projects(:projects_001)
+    p.enable_module!(:mail_preferences)
+
+    m = ProjectMailPreference.new
+    m.project = p
+    m.disable_notified_events = ['issue_updated', 'issue_assigned_to_updated']
+    m.save!
+
+    log_user('admin', 'admin')
+
+    put_issue_edit do
+      put(
+        '/issues/2',
+        params: {
+          issue: {
+            assigned_to_id: '2',
+          }
+        })
+    end
+
+    if Redmine::VERSION::MAJOR >= 4
+      assert_equal 2, ActionMailer::Base.deliveries.length
+      assert_equal 1, ActionMailer::Base.deliveries[0].to.length
+      assert_equal 1, ActionMailer::Base.deliveries[1].to.length
+
+      to0 = ActionMailer::Base.deliveries[0].to
+      to1 = ActionMailer::Base.deliveries[1].to
+
+      assert_include 'admin@somenet.foo', (to0 + to1)
+      assert_include 'dlopper@somenet.foo', (to0 + to1)
+    else
+      assert_equal 1, ActionMailer::Base.deliveries.length
+
+      mail = ActionMailer::Base.deliveries[0]
+      assert_equal 0, mail.to.length
+      assert_equal 2, mail.cc.length
+
+      assert_include 'admin@somenet.foo', mail.cc
+      assert_include 'dlopper@somenet.foo', mail.cc
+    end
+  end
+
+  def test_issue_edit_project_disabled_issue_priority_updated
+    p = projects(:projects_001)
+    p.enable_module!(:mail_preferences)
+
+    m = ProjectMailPreference.new
+    m.project = p
+    m.disable_notified_events = ['issue_updated', 'issue_priority_updated']
+    m.save!
+
+    log_user('admin', 'admin')
+
+    put_issue_edit do
+      put(
+        '/issues/2',
+        params: {
+          issue: {
+            priority_id: '8',
+          }
+        })
+    end
+
+    if Redmine::VERSION::MAJOR >= 4
+      assert_equal 2, ActionMailer::Base.deliveries.length
+      assert_equal 1, ActionMailer::Base.deliveries[0].to.length
+      assert_equal 1, ActionMailer::Base.deliveries[1].to.length
+
+      to0 = ActionMailer::Base.deliveries[0].to
+      to1 = ActionMailer::Base.deliveries[1].to
+
+      assert_include 'admin@somenet.foo', (to0 + to1)
+      assert_include 'dlopper@somenet.foo', (to0 + to1)
+    else
+      assert_equal 1, ActionMailer::Base.deliveries.length
+
+      mail = ActionMailer::Base.deliveries[0]
+      assert_equal 0, mail.to.length
+      assert_equal 2, mail.cc.length
+
+      assert_include 'admin@somenet.foo', mail.cc
+      assert_include 'dlopper@somenet.foo', mail.cc
+    end
+  end
+
+  def test_issue_edit_project_disabled_issue_fixed_version_updated
+    p = projects(:projects_001)
+    p.enable_module!(:mail_preferences)
+
+    m = ProjectMailPreference.new
+    m.project = p
+    if Redmine::VERSION::MAJOR >= 4
+      m.disable_notified_events = ['issue_updated', 'issue_fixed_version_updated']
+    else
+      m.disable_notified_events = ['issue_updated']
+    end
+    m.save!
+
+    log_user('admin', 'admin')
+
+    put_issue_edit do
+      put(
+        '/issues/2',
+        params: {
+          issue: {
+            fixed_version_id: '3',
+          }
+        })
+    end
+
+    if Redmine::VERSION::MAJOR >= 4
+      assert_equal 2, ActionMailer::Base.deliveries.length
+      assert_equal 1, ActionMailer::Base.deliveries[0].to.length
+      assert_equal 1, ActionMailer::Base.deliveries[1].to.length
+
+      to0 = ActionMailer::Base.deliveries[0].to
+      to1 = ActionMailer::Base.deliveries[1].to
+
+      assert_include 'admin@somenet.foo', (to0 + to1)
+      assert_include 'dlopper@somenet.foo', (to0 + to1)
+    else
+      assert_equal 1, ActionMailer::Base.deliveries.length
+
+      mail = ActionMailer::Base.deliveries[0]
+      assert_equal 0, mail.to.length
+      assert_equal 2, mail.cc.length
+
+      assert_include 'admin@somenet.foo', mail.cc
+      assert_include 'dlopper@somenet.foo', mail.cc
     end
   end
 

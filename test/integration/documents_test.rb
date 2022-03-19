@@ -16,6 +16,7 @@ class DocumentsTest < Redmine::IntegrationTest
            :user_preferences,
            :users,
            :watchers,
+           :project_mail_preferences,
            :user_mail_preferences
 
   def setup
@@ -85,5 +86,31 @@ class DocumentsTest < Redmine::IntegrationTest
       assert_include 'jsmith@somenet.foo', mail.to
       assert_include 'dlopper@somenet.foo', mail.to
     end
+  end
+
+  def test_document_add_project_disabled
+    p = projects(:projects_001)
+    p.enable_module!(:mail_preferences)
+
+    m = ProjectMailPreference.new
+    m.project = p
+    m.disable_notified_events = ['document_added']
+    m.save!
+
+    log_user('admin', 'admin')
+
+    new_record(Document) do
+      post(
+        '/projects/ecookbook/documents',
+        params: {
+          document: {
+            title: 'test',
+            description: 'test',
+            category_id: "1",
+          }
+        })
+    end
+
+    assert_equal 0, ActionMailer::Base.deliveries.length
   end
 end

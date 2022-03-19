@@ -5,6 +5,7 @@ require File.expand_path('../../test_helper', __FILE__)
 class UtilsTest < ActiveSupport::TestCase
   fixtures :issues,
            :users,
+           :project_mail_preferences,
            :user_mail_preferences
 
   def test_disable_event_for_001

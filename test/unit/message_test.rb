@@ -11,6 +11,7 @@ class MessageTest < ActiveSupport::TestCase
            :projects,
            :roles,
            :users,
+           :project_mail_preferences,
            :user_mail_preferences
 
   def setup

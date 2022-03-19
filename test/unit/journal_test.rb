@@ -12,6 +12,7 @@ class JournalTest < ActiveSupport::TestCase
            :projects,
            :roles,
            :users,
+           :project_mail_preferences,
            :user_mail_preferences
 
   def test_notified_users_description_disable

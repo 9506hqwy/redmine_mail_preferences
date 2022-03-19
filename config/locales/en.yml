@@ -1,2 +1,5 @@
 en:
   label_except_watcher: (Not applicable to watcher)
+  mail_preferences: Mail Notification
+  permission_edit_mail_preferences: Edit Mail Notification
+  project_module_mail_preferences: Mail Notification

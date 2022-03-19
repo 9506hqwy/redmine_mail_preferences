@@ -12,6 +12,7 @@ class WikiContentTest < ActiveSupport::TestCase
            :wiki_contents,
            :wiki_pages,
            :wikis,
+           :project_mail_preferences,
            :user_mail_preferences
 
   def setup

@@ -19,6 +19,7 @@ class WikiTest < Redmine::IntegrationTest
            :wiki_contents,
            :wiki_pages,
            :wikis,
+           :project_mail_preferences,
            :user_mail_preferences
 
   def setup
@@ -86,6 +87,30 @@ class WikiTest < Redmine::IntegrationTest
     end
   end
 
+  def test_wiki_content_added_project_disabled
+    p = projects(:projects_001)
+    p.enable_module!(:mail_preferences)
+
+    m = ProjectMailPreference.new
+    m.project = p
+    m.disable_notified_events = ['wiki_content_added']
+    m.save!
+
+    log_user('admin', 'admin')
+
+    new_record(WikiContent) do
+      put(
+        '/projects/ecookbook/wiki/Wiki',
+        params: {
+          content: {
+            text: "wiki content"
+          }
+        })
+    end
+
+    assert_equal 0, ActionMailer::Base.deliveries.length
+  end
+
   def test_wiki_content_updated_disabled
     m = UserMailPreference.new
     m.user = users(:users_002)
@@ -139,6 +164,28 @@ class WikiTest < Redmine::IntegrationTest
       assert_include 'jsmith@somenet.foo', mail.to
       assert_include 'dlopper@somenet.foo', mail.to
     end
+  end
+
+  def test_wiki_content_updated_project_disabled
+    p = projects(:projects_001)
+    p.enable_module!(:mail_preferences)
+
+    m = ProjectMailPreference.new
+    m.project = p
+    m.disable_notified_events = ['wiki_content_updated']
+    m.save!
+
+    log_user('admin', 'admin')
+
+    put(
+      '/projects/ecookbook/wiki/CookBook_documentation',
+      params: {
+        content: {
+          text: "wiki content"
+        }
+      })
+
+    assert_equal 0, ActionMailer::Base.deliveries.length
   end
 
   def test_wiki_comment_added_disabled
@@ -207,5 +254,37 @@ class WikiTest < Redmine::IntegrationTest
     assert_include 'admin@somenet.foo', (t0 + t1 + t2)
     assert_include 'jsmith@somenet.foo', (t0 + t1 + t2)
     assert_include 'dlopper@somenet.foo', (t0 + t1 + t2)
+  end
+
+  def test_wiki_comment_added_project_disabled
+    skip unless Redmine::Plugin.installed?(:redmine_wiki_extensions)
+    skip unless Redmine::VERSION::MAJOR >= 4
+
+    p = projects(:projects_001)
+    p.enable_module!(:mail_preferences)
+
+    m = ProjectMailPreference.new
+    m.project = p
+    m.disable_notified_events = ['wiki_comment_added']
+    m.save!
+
+    projects(:projects_001).enable_module!(:wiki_extensions)
+    roles(:roles_001).add_permission!(:add_wiki_comment)
+
+    page = wiki_pages(:wiki_pages_001)
+    page.add_watcher(users(:users_001))
+
+    log_user('jsmith', 'jsmith')
+
+    post(
+      '/projects/ecookbook/wiki_extensions/add_comment',
+      params: {
+        wiki_page_id: page.id,
+        comment: 'test comment',
+      })
+
+    assert_equal 1, ActionMailer::Base.deliveries.length
+    assert_equal 1, ActionMailer::Base.deliveries.last.to.length
+    assert_include 'admin@somenet.foo', ActionMailer::Base.deliveries.last.to
   end
 end
