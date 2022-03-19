@@ -1,10 +1,11 @@
 <!-- 個別設定とユーザ編集の表示 -->
 <%
    if controller &&
-      (controller.class.name == 'MyController' &&
+      ((controller.class.name == 'MyController' &&
        controller.action_name == 'account') ||
       (controller.class.name == 'UsersController' &&
-       controller.action_name == 'edit')
+       controller.action_name == 'edit')) &&
+      @notifiables.length != 0
 %>
 
 <fieldset class="box" id="notified_events">
