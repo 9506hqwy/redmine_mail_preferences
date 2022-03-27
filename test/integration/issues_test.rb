@@ -4,6 +4,7 @@ require 'test_after_commit' if ActiveRecord::VERSION::MAJOR < 5
 require File.expand_path('../../test_helper', __FILE__)
 
 class IssuesTest < Redmine::IntegrationTest
+  include ActiveJob::TestHelper
   include Redmine::I18n
 
   fixtures :email_addresses,
@@ -38,17 +39,19 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    new_record(Issue) do
-      post(
-        '/projects/ecookbook/issues',
-        params: {
-          issue: {
-            tracker_id: '1',
-            start_date: '2000-01-01',
-            priority_id: "5",
-            subject: "test issue",
-          }
-        })
+    perform_enqueued_jobs do
+      new_record(Issue) do
+        post(
+          '/projects/ecookbook/issues',
+          params: {
+            issue: {
+              tracker_id: '1',
+              start_date: '2000-01-01',
+              priority_id: "5",
+              subject: "test issue",
+            }
+          })
+      end
     end
 
     assert_equal 1, ActionMailer::Base.deliveries.length
@@ -61,17 +64,19 @@ class IssuesTest < Redmine::IntegrationTest
   def test_issue_add_enabled
     log_user('admin', 'admin')
 
-    new_record(Issue) do
-      post(
-        '/projects/ecookbook/issues',
-        params: {
-          issue: {
-            tracker_id: '1',
-            start_date: '2000-01-01',
-            priority_id: "5",
-            subject: "test issue",
-          }
-        })
+    perform_enqueued_jobs do
+      new_record(Issue) do
+        post(
+          '/projects/ecookbook/issues',
+          params: {
+            issue: {
+              tracker_id: '1',
+              start_date: '2000-01-01',
+              priority_id: "5",
+              subject: "test issue",
+            }
+          })
+      end
     end
 
     if Redmine::VERSION::MAJOR >= 4
@@ -106,17 +111,19 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    new_record(Issue) do
-      post(
-        '/projects/ecookbook/issues',
-        params: {
-          issue: {
-            tracker_id: '1',
-            start_date: '2000-01-01',
-            priority_id: "5",
-            subject: "test issue",
-          }
-        })
+    perform_enqueued_jobs do
+      new_record(Issue) do
+        post(
+          '/projects/ecookbook/issues',
+          params: {
+            issue: {
+              tracker_id: '1',
+              start_date: '2000-01-01',
+              priority_id: "5",
+              subject: "test issue",
+            }
+          })
+      end
     end
 
     assert_equal 0, ActionMailer::Base.deliveries.length
@@ -130,14 +137,16 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put_issue_edit do
-      put(
-        '/issues/2',
-        params: {
-          issue: {
-            subject: "test issue",
-          }
-        })
+    perform_enqueued_jobs do
+      put_issue_edit do
+        put(
+          '/issues/2',
+          params: {
+            issue: {
+              subject: "test issue",
+            }
+          })
+      end
     end
 
     if Redmine::VERSION::MAJOR >= 4
@@ -170,14 +179,16 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put_issue_edit do
-      put(
-        '/issues/2',
-        params: {
-          issue: {
-            notes: "note",
-          }
-        })
+    perform_enqueued_jobs do
+      put_issue_edit do
+        put(
+          '/issues/2',
+          params: {
+            issue: {
+              notes: "note",
+            }
+          })
+      end
     end
 
     if Redmine::VERSION::MAJOR >= 4
@@ -210,14 +221,16 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put_issue_edit do
-      put(
-        '/issues/2',
-        params: {
-          issue: {
-            status_id: '3',
-          }
-        })
+    perform_enqueued_jobs do
+      put_issue_edit do
+        put(
+          '/issues/2',
+          params: {
+            issue: {
+              status_id: '3',
+            }
+          })
+      end
     end
 
     if Redmine::VERSION::MAJOR >= 4
@@ -250,14 +263,16 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put_issue_edit do
-      put(
-        '/issues/2',
-        params: {
-          issue: {
-            assigned_to_id: '2',
-          }
-        })
+    perform_enqueued_jobs do
+      put_issue_edit do
+        put(
+          '/issues/2',
+          params: {
+            issue: {
+              assigned_to_id: '2',
+            }
+          })
+      end
     end
 
     if Redmine::VERSION::MAJOR >= 4
@@ -290,14 +305,16 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put_issue_edit do
-      put(
-        '/issues/2',
-        params: {
-          issue: {
-            priority_id: '8',
-          }
-        })
+    perform_enqueued_jobs do
+      put_issue_edit do
+        put(
+          '/issues/2',
+          params: {
+            issue: {
+              priority_id: '8',
+            }
+          })
+      end
     end
 
     if Redmine::VERSION::MAJOR >= 4
@@ -334,14 +351,16 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put_issue_edit do
-      put(
-        '/issues/2',
-        params: {
-          issue: {
-            fixed_version_id: '3',
-          }
-        })
+    perform_enqueued_jobs do
+      put_issue_edit do
+        put(
+          '/issues/2',
+          params: {
+            issue: {
+              fixed_version_id: '3',
+            }
+          })
+      end
     end
 
     if Redmine::VERSION::MAJOR >= 4
@@ -369,14 +388,16 @@ class IssuesTest < Redmine::IntegrationTest
   def test_issue_edit_enabled_issue_updated
     log_user('admin', 'admin')
 
-    put_issue_edit do
-      put(
-        '/issues/2',
-        params: {
-          issue: {
-            subject: "test issue",
-          }
-        })
+    perform_enqueued_jobs do
+      put_issue_edit do
+        put(
+          '/issues/2',
+          params: {
+            issue: {
+              subject: "test issue",
+            }
+          })
+      end
     end
 
     if Redmine::VERSION::MAJOR >= 4
@@ -413,14 +434,16 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put_issue_edit do
-      put(
-        '/issues/2',
-        params: {
-          issue: {
-            notes: "note",
-          }
-        })
+    perform_enqueued_jobs do
+      put_issue_edit do
+        put(
+          '/issues/2',
+          params: {
+            issue: {
+              notes: "note",
+            }
+          })
+      end
     end
 
     if Redmine::VERSION::MAJOR >= 4
@@ -457,14 +480,16 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put_issue_edit do
-      put(
-        '/issues/2',
-        params: {
-          issue: {
-            status_id: '3',
-          }
-        })
+    perform_enqueued_jobs do
+      put_issue_edit do
+        put(
+          '/issues/2',
+          params: {
+            issue: {
+              status_id: '3',
+            }
+          })
+      end
     end
 
     if Redmine::VERSION::MAJOR >= 4
@@ -501,14 +526,16 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put_issue_edit do
-      put(
-        '/issues/2',
-        params: {
-          issue: {
-            assigned_to_id: '2',
-          }
-        })
+    perform_enqueued_jobs do
+      put_issue_edit do
+        put(
+          '/issues/2',
+          params: {
+            issue: {
+              assigned_to_id: '2',
+            }
+          })
+      end
     end
 
     if Redmine::VERSION::MAJOR >= 4
@@ -545,14 +572,16 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put_issue_edit do
-      put(
-        '/issues/2',
-        params: {
-          issue: {
-            priority_id: '8',
-          }
-        })
+    perform_enqueued_jobs do
+      put_issue_edit do
+        put(
+          '/issues/2',
+          params: {
+            issue: {
+              priority_id: '8',
+            }
+          })
+      end
     end
 
     if Redmine::VERSION::MAJOR >= 4
@@ -593,14 +622,16 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put_issue_edit do
-      put(
-        '/issues/2',
-        params: {
-          issue: {
-            fixed_version_id: '3',
-          }
-        })
+    perform_enqueued_jobs do
+      put_issue_edit do
+        put(
+          '/issues/2',
+          params: {
+            issue: {
+              fixed_version_id: '3',
+            }
+          })
+      end
     end
 
     if Redmine::VERSION::MAJOR >= 4
@@ -640,14 +671,16 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put_issue_edit do
-      put(
-        '/issues/2',
-        params: {
-          issue: {
-            subject: "test issue",
-          }
-        })
+    perform_enqueued_jobs do
+      put_issue_edit do
+        put(
+          '/issues/2',
+          params: {
+            issue: {
+              subject: "test issue",
+            }
+          })
+      end
     end
 
     if Redmine::VERSION::MAJOR >= 4
@@ -683,14 +716,16 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put_issue_edit do
-      put(
-        '/issues/2',
-        params: {
-          issue: {
-            notes: "note",
-          }
-        })
+    perform_enqueued_jobs do
+      put_issue_edit do
+        put(
+          '/issues/2',
+          params: {
+            issue: {
+              notes: "note",
+            }
+          })
+      end
     end
 
     if Redmine::VERSION::MAJOR >= 4
@@ -726,14 +761,16 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put_issue_edit do
-      put(
-        '/issues/2',
-        params: {
-          issue: {
-            status_id: '3',
-          }
-        })
+    perform_enqueued_jobs do
+      put_issue_edit do
+        put(
+          '/issues/2',
+          params: {
+            issue: {
+              status_id: '3',
+            }
+          })
+      end
     end
 
     if Redmine::VERSION::MAJOR >= 4
@@ -769,14 +806,16 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put_issue_edit do
-      put(
-        '/issues/2',
-        params: {
-          issue: {
-            assigned_to_id: '2',
-          }
-        })
+    perform_enqueued_jobs do
+      put_issue_edit do
+        put(
+          '/issues/2',
+          params: {
+            issue: {
+              assigned_to_id: '2',
+            }
+          })
+      end
     end
 
     if Redmine::VERSION::MAJOR >= 4
@@ -812,14 +851,16 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put_issue_edit do
-      put(
-        '/issues/2',
-        params: {
-          issue: {
-            priority_id: '8',
-          }
-        })
+    perform_enqueued_jobs do
+      put_issue_edit do
+        put(
+          '/issues/2',
+          params: {
+            issue: {
+              priority_id: '8',
+            }
+          })
+      end
     end
 
     if Redmine::VERSION::MAJOR >= 4
@@ -859,14 +900,16 @@ class IssuesTest < Redmine::IntegrationTest
 
     log_user('admin', 'admin')
 
-    put_issue_edit do
-      put(
-        '/issues/2',
-        params: {
-          issue: {
-            fixed_version_id: '3',
-          }
-        })
+    perform_enqueued_jobs do
+      put_issue_edit do
+        put(
+          '/issues/2',
+          params: {
+            issue: {
+              fixed_version_id: '3',
+            }
+          })
+      end
     end
 
     if Redmine::VERSION::MAJOR >= 4
