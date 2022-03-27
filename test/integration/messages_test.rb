@@ -21,7 +21,7 @@ class MessagesTest < Redmine::IntegrationTest
            :user_mail_preferences
 
   def setup
-    Setting.bcc_recipients = false
+    Setting.bcc_recipients = false if Setting.available_settings.key?('bcc_recipients')
     Setting.notified_events = ['message_posted']
     ActionMailer::Base.deliveries.clear
   end
