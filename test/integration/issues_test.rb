@@ -22,6 +22,7 @@ class IssuesTest < Redmine::IntegrationTest
            :trackers,
            :versions,
            :watchers,
+           :workflows,
            :project_mail_preferences,
            :user_mail_preferences
 
