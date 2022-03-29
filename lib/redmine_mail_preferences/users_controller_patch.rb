@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 module RedmineMailPreferences
+  module UsersControllerPatch
+  end
+
   module UsersControllerPatch4
     # Include here because `UsersController` does not include `UsersHelper` in Redmine3.
     include RedmineMailPreferences::MailPreferencesHelper

@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module RedmineMailPreferences
-  module IssuePatch4
+  module NewsPatch
+  end
+
+  module NewsPatch4
     def self.included(base)
       base.class_eval do
         alias_method_chain(:notified_users, :mail_preferences)
@@ -13,7 +16,7 @@ module RedmineMailPreferences
     end
   end
 
-  module IssuePatch5
+  module NewsPatch5
     def notified_users
       RedmineMailPreferences::Utils.remove_by_disabled_event(self, super)
     end
@@ -21,7 +24,7 @@ module RedmineMailPreferences
 end
 
 if ActiveSupport::VERSION::MAJOR >= 5
-  Issue.prepend RedmineMailPreferences::IssuePatch5
+  News.prepend RedmineMailPreferences::NewsPatch5
 else
-  Issue.include RedmineMailPreferences::IssuePatch4
+  News.include RedmineMailPreferences::NewsPatch4
 end

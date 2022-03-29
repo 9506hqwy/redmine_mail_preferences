@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 module RedmineMailPreferences
+  module DocumentPatch
+  end
+
   module DocumentPatch4
     def self.included(base)
       base.class_eval do

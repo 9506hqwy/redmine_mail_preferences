@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module RedmineMailPreferences
-  module WikiContentPatch4
+  module JournalPatch
+  end
+
+  module JournalPatch4
     def self.included(base)
       base.class_eval do
         alias_method_chain(:notified_users, :mail_preferences)
@@ -13,7 +16,7 @@ module RedmineMailPreferences
     end
   end
 
-  module WikiContentPatch5
+  module JournalPatch5
     def notified_users
       RedmineMailPreferences::Utils.remove_by_disabled_event(self, super)
     end
@@ -21,7 +24,7 @@ module RedmineMailPreferences
 end
 
 if ActiveSupport::VERSION::MAJOR >= 5
-  WikiContent.prepend RedmineMailPreferences::WikiContentPatch5
+  Journal.prepend RedmineMailPreferences::JournalPatch5
 else
-  WikiContent.include RedmineMailPreferences::WikiContentPatch4
+  Journal.include RedmineMailPreferences::JournalPatch4
 end

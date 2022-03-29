@@ -1,21 +1,29 @@
 # frozen_string_literal: true
 
-require_dependency 'mail_preferences/mail_preferences_helper'
-require_dependency 'mail_preferences/users_helper_patch'
-# require helper module before other.
-require_dependency 'mail_preferences/document_patch'
-require_dependency 'mail_preferences/issue_patch'
-require_dependency 'mail_preferences/journal_patch'
-require_dependency 'mail_preferences/message_patch'
-require_dependency 'mail_preferences/my_controller_patch'
-require_dependency 'mail_preferences/news_patch'
-require_dependency 'mail_preferences/project_patch'
-require_dependency 'mail_preferences/projects_helper_patch'
-require_dependency 'mail_preferences/users_controller_patch'
-require_dependency 'mail_preferences/user_patch'
-require_dependency 'mail_preferences/utils'
-require_dependency 'mail_preferences/view_listener'
-require_dependency 'mail_preferences/wiki_content_patch'
+basedir = File.expand_path('../lib', __FILE__)
+libraries =
+  [
+    'redmine_mail_preferences/mail_preferences_helper',
+    'redmine_mail_preferences/users_helper_patch',
+    # require helper module before other.
+    'redmine_mail_preferences/document_patch',
+    'redmine_mail_preferences/issue_patch',
+    'redmine_mail_preferences/journal_patch',
+    'redmine_mail_preferences/message_patch',
+    'redmine_mail_preferences/my_controller_patch',
+    'redmine_mail_preferences/news_patch',
+    'redmine_mail_preferences/project_patch',
+    'redmine_mail_preferences/projects_helper_patch',
+    'redmine_mail_preferences/users_controller_patch',
+    'redmine_mail_preferences/user_patch',
+    'redmine_mail_preferences/utils',
+    'redmine_mail_preferences/view_listener',
+    'redmine_mail_preferences/wiki_content_patch',
+  ]
+
+libraries.each do |library|
+  require_dependency File.expand_path(library, basedir)
+end
 
 Redmine::Plugin.register :redmine_mail_preferences do
   name 'Redmine Mail Preferences plugin'
