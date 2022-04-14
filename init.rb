@@ -29,7 +29,7 @@ Redmine::Plugin.register :redmine_mail_preferences do
   name 'Redmine Mail Preferences plugin'
   author '9506hqwy'
   description 'This is a mail user preferences plugin for Redmine'
-  version '0.2.0'
+  version '0.3.0'
   url 'https://github.com/9506hqwy/redmine_mail_preferences'
   author_url 'https://github.com/9506hqwy'
 
