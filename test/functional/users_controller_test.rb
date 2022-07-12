@@ -5,7 +5,8 @@ require File.expand_path('../../test_helper', __FILE__)
 class UsersControllerTest < Redmine::ControllerTest
   include Redmine::I18n
 
-  fixtures :users,
+  fixtures :email_addresses,
+           :users,
            :user_mail_preferences
 
   def setup

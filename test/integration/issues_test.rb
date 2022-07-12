@@ -343,7 +343,7 @@ class IssuesTest < Redmine::IntegrationTest
   def test_issue_edit_disabled_issue_fixed_version_updated
     m = UserMailPreference.new
     m.user = users(:users_002)
-    if Redmine::VERSION::MAJOR >= 4
+    if (Redmine::VERSION::ARRAY[0..1] <=> [4, 1]) >= 0
       m.disable_notified_events = ['issue_updated', 'issue_fixed_version_updated']
     else
       m.disable_notified_events = ['issue_updated']
@@ -614,7 +614,7 @@ class IssuesTest < Redmine::IntegrationTest
   def test_issue_edit_enabled_issue_fixed_version_updated
     m = UserMailPreference.new
     m.user = users(:users_002)
-    if Redmine::VERSION::MAJOR >= 4
+    if (Redmine::VERSION::ARRAY[0..1] <=> [4, 1]) >= 0
       m.disable_notified_events = ['issue_updated']
     else
       m.disable_notified_events = []
@@ -892,7 +892,7 @@ class IssuesTest < Redmine::IntegrationTest
 
     m = ProjectMailPreference.new
     m.project = p
-    if Redmine::VERSION::MAJOR >= 4
+    if (Redmine::VERSION::ARRAY[0..1] <=> [4, 1]) >= 0
       m.disable_notified_events = ['issue_updated', 'issue_fixed_version_updated']
     else
       m.disable_notified_events = ['issue_updated']

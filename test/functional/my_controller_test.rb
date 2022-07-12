@@ -5,7 +5,8 @@ require File.expand_path('../../test_helper', __FILE__)
 class MyControllerTest < Redmine::ControllerTest
   include Redmine::I18n
 
-  fixtures :users,
+  fixtures :email_addresses,
+           :users,
            :user_mail_preferences
 
   def setup
@@ -29,7 +30,7 @@ class MyControllerTest < Redmine::ControllerTest
       }
     }
 
-    if Redmine::VERSION::MAJOR >= 4
+    if (Redmine::VERSION::ARRAY[0..1] <=> [4, 1]) >= 0
       put :account, params: params
     else
       post :account, params: params

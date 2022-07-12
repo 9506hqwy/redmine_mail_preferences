@@ -4,6 +4,7 @@ require File.expand_path('../../test_helper', __FILE__)
 
 class UtilsTest < ActiveSupport::TestCase
   fixtures :issues,
+           :projects,
            :users,
            :project_mail_preferences,
            :user_mail_preferences
