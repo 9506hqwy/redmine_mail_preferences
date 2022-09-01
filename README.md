@@ -8,7 +8,11 @@ This plugin provides a mail preference configuration per user or project.
    ```sh
    git clone https://github.com/9506hqwy/redmine_mail_preferences.git
    ```
-2. Start Redmine
+2. Install plugin in Redmine directory.
+   ```sh
+   bundle exec rake redmine:plugins:migrate NAME=redmine_mail_preferences RAILS_ENV=production
+   ```
+3. Start Redmine
 
 ## Configuration
 
