@@ -43,7 +43,9 @@ module RedmineMailPreferences
 end
 
 if ActiveSupport::VERSION::MAJOR >= 5
-  ProjectsHelper.prepend RedmineMailPreferences::ProjectsHelperPatch5
+  Rails.application.config.after_initialize do
+    ProjectsController.send(:helper, RedmineMailPreferences::ProjectsHelperPatch5)
+  end
 else
   ProjectsHelper.include RedmineMailPreferences::ProjectsHelperPatch4
 end
