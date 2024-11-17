@@ -37,9 +37,10 @@ This plugin provides a mail preference configuration per user or project.
   * 4.2
   * 5.0
   * 5.1
+  * 6.0
 * Database
   * SQLite
-  * MySQL 5.7
+  * MySQL 5.7 or 8.0
   * PostgreSQL 12
 
 ## References
