@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProjectMailPreference < ActiveRecord::Base
+class ProjectMailPreference < RedmineMailPreferences::Utils::ModelBase
   belongs_to :project
 
   validates :project, presence: true

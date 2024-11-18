@@ -8,6 +8,13 @@ module RedmineMailPreferences
       Migration = ActiveRecord::Migration
     end
 
+    if defined?(ApplicationRecord)
+      # https://www.redmine.org/issues/38975
+      ModelBase = ApplicationRecord
+    else
+      ModelBase = ActiveRecord::Base
+    end
+
     def self.disable_event_for(target, events)
       return false if target.mail_preferences.blank?
 
@@ -25,8 +32,7 @@ module RedmineMailPreferences
         return []
       end
 
-      users.reject! { |u| disable_event_for(u, notified_events) }
-      users
+      users.reject { |u| disable_event_for(u, notified_events) }
     end
 
     def self.method_to_event(container, method)
