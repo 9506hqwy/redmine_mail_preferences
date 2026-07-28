@@ -3,8 +3,6 @@
 class UserMailPreference < RedmineMailPreferences::Utils::ModelBase
   belongs_to :user
 
-  validates :user, presence: true
-
   def disable_notified_events
     v = read_attribute(:disable_notified_events)
     YAML.safe_load(v) if v

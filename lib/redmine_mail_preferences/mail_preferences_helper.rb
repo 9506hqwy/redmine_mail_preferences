@@ -52,13 +52,13 @@ module RedmineMailPreferences
     end
 
     def target_disable_notified_events(enables)
-      enable_children =  Redmine::Notifiable.all.select { |c| enables.any? { |e| e == c.parent } }.map { |n| n.name }
+      enable_children =  Redmine::Notifiable.all.select { |c| enables.any?(c.parent) }.map { |n| n.name }
       Redmine::Notifiable.all.map { |n| n.name } - (enables | enable_children)
     end
 
     def target_enable_notified_events(disables)
       enables = Redmine::Notifiable.all.map { |n| n.name } - disables
-      enable_children =  Redmine::Notifiable.all.select { |c| enables.any? { |e| e == c.parent } }.map { |n| n.name }
+      enable_children =  Redmine::Notifiable.all.select { |c| enables.any?(c.parent) }.map { |n| n.name }
       enables - enable_children
     end
 
